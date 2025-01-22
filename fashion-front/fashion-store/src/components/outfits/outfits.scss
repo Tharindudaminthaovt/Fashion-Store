@@ -1,0 +1,82 @@
+#outfitsList {
+  height: 100%;
+
+  .outfit-card {
+    .outfit-card-body {
+      height: 100%;
+    }
+
+    .outfit-desc {
+      text-align: justify;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
+  }
+
+  #itemsList {
+    max-height: 35rem;
+    overflow-y: auto;
+    margin-top: 1rem;
+  }
+
+  .card-titless {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .item-img {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+    border-radius: 5px;
+  }
+}
+
+#outfits-add-pg {
+  .form-container {
+    // min-width: 300px;
+    // width: -webkit-fill-available;
+
+    .form-label {
+      color: whitesmoke;
+    }
+
+    .search-area {
+      // width: 300px;
+    }
+  }
+}
+
+#OutfitCreate {
+  .grid-container {
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+
+    .box {
+      height: 250px;
+      width: 260px;
+      border: 2px solid white;
+      border-radius: 5px;
+    }
+  }
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.spinner-size {
+  width: 3rem;
+  height: 3rem;
+}

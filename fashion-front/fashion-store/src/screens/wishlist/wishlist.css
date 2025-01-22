@@ -1,0 +1,12 @@
+.wishlist-card {
+  /* transition: transform .9s; */
+  transition: transform 0.2s !important;
+}
+.wishlist-card:hover {
+  transform: scale(1.01);
+}
+.wishlist-card-img {
+  /* height: "150px"; */
+  width: 150px !important;
+  height: 150px !important;
+}

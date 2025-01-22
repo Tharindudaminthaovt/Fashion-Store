@@ -1,0 +1,42 @@
+#version: '3.8'
+
+services:
+  web:
+    image: nginx
+    ports:
+      - "81:80"  # Expose Nginx to port 81 on the host
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - fullstack-fashion-network   
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-container
+    ports:
+      - "5000:5000"  # Expose backend port to the host
+    volumes:
+      - ./backend:/app  # Bind mount backend code (optional for live updates)
+    networks:
+      - fullstack-fashion-network
+
+  frontend:
+    build:
+      context: ./fashion-front/fashion-store
+      dockerfile: Dockerfile
+    container_name: frontend-container
+    ports:
+      - "3000:3000"  # Expose frontend port to the host
+    volumes:
+      - ./fashion-front/fashion-store:/app  # Bind mount frontend code (optional for live updates)
+    depends_on:
+      - backend  # Ensure backend is up before frontend
+    networks:
+      - fullstack-fashion-network
+
+networks:
+  fullstack-fashion-network:
+    driver: bridge

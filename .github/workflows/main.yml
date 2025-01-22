@@ -1,0 +1,278 @@
+name: CI/CD for Fashion Store
+
+on:
+  push:
+    branches:
+      - master # Trigger workflow on push to the main branch
+      - main
+      - develop
+      - products # Trigger workflow for the products branch
+      - aboutus # Trigger workflow for the aboutus branch
+      - adminhomefront # Trigger workflow for the adminhomefront branch
+      - login # Trigger workflow for the login branch
+      - wishlist # Trigger workflow for the wishlist branch
+      - payment # Trigger workflow for the payment branch
+      - tailors # Trigger workflow for the tailors branch
+      - blog # Trigger workflow for the blog branch
+  pull_request:
+    branches:
+      - master # Trigger workflow on pull requests targeting the main branch
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js for backend
+      - name: Set up Node.js (Backend)
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      # Step 3: Install backend dependencies
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: npm install
+
+      # Step 4: Run tests (products branch-specific and master)
+      # - name: Run Integration Tests for Products
+      #   if: github.ref_name == 'develop' || github.ref_name == 'main'
+      #   working-directory: ./backend
+      #   run: |
+      #     npm test -- test/products.back.test/integration/posttailor.int.test.js
+      #     npm test -- test/products.back.test/integration/updatebyID.int.test.js
+      #     npm test -- test/products.back.test/integration/gettailor.int.test.js
+      #npm test -- test/products.back.test/integration/deleteitem.int.test.js
+      # - name: Run Integration Tests for wishlists
+      #   if: github.ref_name == 'main' || github.ref_name == 'develop'
+      #   working-directory: ./backend
+      #   run: |
+      #     npm test -- test/wishlist/integration/getwish.int.test.js
+      #     npm test -- test/wishlist/integration/postwish.int.test.js
+
+      - name: Run Integration Tests for Orders
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run test-file -- test/order/integration/createCustomerOrder.int.test.js --exit
+          npm run test-file -- test/order/integration/getAllCustomerOrder.int.test.js --exit
+          npm run test-file -- test/order/integration/getCustomerOrderById.int.test.js --exit
+          npm run test-file -- test/order/integration/postOrder.int.test.js --exit
+          npm run test-file -- test/order/integration/updateCustomerOrder.int.test.js --exit
+          npm run test-file -- test/order/integration/acceptCustomerOrder.int.test.js --exit
+      
+      - name: Run Integration Tests for Outfits
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run test-file -- test/outfit/integration/createOutfits.int.test.js --exit
+          npm run test-file -- test/outfit/integration/getOutfitById.int.test.js --exit
+          npm run test-file -- test/outfit/integration/getUserOutfits.int.test.js --exit
+          npm run test-file -- test/outfit/integration/updateOutfit.int.test.js --exit
+          npm run test-file -- test/outfit/integration/deleteOutfits.int.test.js --exit
+
+      - name: Run Integration Tests for Status Code
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run test-file -- test/statuscode/integration/paymentnotify.int.test.js --exit
+
+      - name: Run Integration Tests for Tailor
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run test-file -- test/tailor/integration/createPost.int.test.js --exit
+          npm run test-file -- test/tailor/integration/getAllTailors.int.test.js --exit
+          npm run test-file -- test/tailor/integration/deleteTailor.int.test.js --exit
+          npm run test-file -- test/tailor/integration/getCollections.int.test.js --exit
+          npm run test-file -- test/tailor/integration/getTailorById.int.test.js --exit
+          npm run test-file -- test/tailor/integration/getTailorsByCollection.int.test.js --exit
+          npm run test-file -- test/tailor/integration/searchTailors.int.test.js --exit
+          npm run test-file -- test/tailor/integration/updateTailor.int.test.js --exit
+
+      - name: Run Integration Tests for Hash Generation
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run test-file -- test/hash/integration/generatehash.int.test.js --exit
+
+      - name: Run Integration Tests for Items
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run test-file -- test/items/integration/addItem.int.test.js --exit
+          npm run test-file -- test/items/integration/deleteItem.int.test.js --exit
+          npm run test-file -- test/items/integration/getallItems.int.test.js --exit
+          npm run test-file -- test/items/integration/getItemById.int.test.js --exit
+          npm run test-file -- test/items/integration/searchItems.int.test.js --exit
+          npm run test-file -- test/items/integration/updateItem.int.test.js --exit
+
+      - name: Run Integration Tests for Wishlist
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run test-file -- test/wishlist/integration/addwishlist.int.test.js --exit
+          npm run test-file -- test/wishlist/integration/deleteWishlist.int.test.js --exit
+          npm run test-file -- test/wishlist/integration/deleteWishListItem.int.test.js --exit
+          npm run test-file -- test/wishlist/integration/gatwithlistbyuser.int.test.js --exit
+          npm run test-file -- test/wishlist/integration/getallwithlist.int.test.js --exit
+          npm run test-file -- test/wishlist/integration/updatewishlist.int.test.js --exit
+
+      - name: Run Integration Tests for Blog
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run test-file -- test/blog/integration/getPostById.int.test.js --exit
+          npm run test-file -- test/blog/integration/updatePost.int.test.js --exit
+          npm run test-file -- test/blog/integration/createPost.int.test.js --exit
+
+
+      # Unit Tests
+      - name: Run Unit Tests for Items
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run unit-test -- test/items/unit/addItem.unit.test.js
+          npm run unit-test -- test/items/unit/getallitems.unit.test.js
+          npm run unit-test -- test/items/unit/getItemById.unit.test.js
+          npm run unit-test -- test/items/unit/searchItems.unit.test.js
+          npm run unit-test -- test/items/unit/updateItem.unit.test.js
+          npm run unit-test -- test/items/unit/deleteItem.unit.test.js
+
+      - name: Run Unit Tests for Orders
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run unit-test -- test/order/unit/createCustomerOrder.unit.test.js
+          npm run unit-test -- test/order/unit/getAllCustomerOrder.unit.test.js
+          npm run unit-test -- test/order/unit/getCustomerOrderById.unit.test.js
+          npm run unit-test -- test/order/unit/postOrder.unit.test.js
+          npm run unit-test -- test/order/unit/updateCustomerOrder.unit.test.js
+          npm run unit-test -- test/order/unit/acceptCustomerOrder.unit.test.js
+      
+      - name: Run Unit Tests for Outfits
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run unit-test -- test/outfit/unit/createOutfits.unit.test.js
+          npm run unit-test -- test/outfit/unit/getOutfitById.unit.test.js
+          npm run unit-test -- test/outfit/unit/getUserOutfits.unit.test.js
+          npm run unit-test -- test/outfit/unit/updateOutfit.unit.test.js
+          npm run unit-test -- test/outfit/unit/deleteOutfit.unit.test.js
+
+      - name: Run Unit Tests for Status Code
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run unit-test -- test/statuscode/unit/paymentnotify.unit.test.js
+          npm run unit-test -- test/statuscode/unit/paymenttest.unit.test.js
+
+      - name: Run Unit Tests for Tailor
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run unit-test -- test/tailor/unit/createPost.unit.test.js
+          npm run unit-test -- test/tailor/unit/getAllTailors.unit.test.js
+          npm run unit-test -- test/tailor/unit/deleeTailor.unit.test.js
+          npm run unit-test -- test/tailor/unit/getCollections.unit.test.js
+          npm run unit-test -- test/tailor/unit/getTailorById.unit.test.js
+          npm run unit-test -- test/tailor/unit/getTailorsByCollection.unit.test.js
+          npm run unit-test -- test/tailor/unit/searchTailors.unit.test.js
+          npm run unit-test -- test/tailor/unit/updateTailor.unit.test.js
+
+      - name: Run Unit Tests for Hash Generation
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run unit-test -- test/hash/unit/generatehash.unit.test.js
+
+      - name: Run Unit Tests for Wishlist
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run unit-test -- test/wishlist/unit/addwithlist.unit.test.js
+          npm run unit-test -- test/wishlist/unit/deleteWishlist.unit.test.js
+          npm run unit-test -- test/wishlist/unit/deleteWishListItem.unit.test.js
+          npm run unit-test -- test/wishlist/unit/getallwishlist.unit.test.js
+          npm run unit-test -- test/wishlist/unit/getwishlistbyuser.unit.test.js
+          npm run unit-test -- test/wishlist/unit/updatewishlist.unit.test.js
+
+      - name: Run Unit Tests for Blog
+        if: github.ref_name == 'develop' || github.ref_name == 'main'
+        working-directory: ./backend
+        env:
+          NODE_ENV: test
+        run: |
+          npm run unit-test -- test/blog/unit/updatePost.unit.test.js
+          npm run unit-test -- test/blog/unit/getPostById.unit.test.js
+          npm run unit-test -- test/blog/unit/createPost.unit.test.js
+
+      # - name: Run Unit Tests
+      #   if: github.ref_name == 'develop' || github.ref_name == 'main'
+      #   working-directory: ./backend
+      #   env:
+      #     NODE_ENV: test
+      #   run: npm run unit-test
+
+      # Step 5: Set up Node.js for frontend
+      - name: Set up Node.js (Frontend)
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      # Step 5: Install frontend dependencies
+      - name: Install Frontend Dependencies
+        working-directory: ./fashion-front/fashion-store
+        run: npm install
+
+      # Step 6: Deploy backend
+      - name: Deploy Backend
+        working-directory: ./backend
+        run: |
+          nohup node server.js &  # Run the backend server in the background
+
+      # Step 7: Deploy frontend
+      - name: Deploy Frontend
+        working-directory: ./fashion-front/fashion-store
+        run: |
+          nohup npm start &  # Run the frontend server in the background
+
+      # Optional: Step 8 - Notify that the app is deployed
+      - name: Notify Deployment
+        run: echo "Backend and Frontend deployed successfully!"

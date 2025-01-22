@@ -1,0 +1,8 @@
+.outer {
+    display: flex;
+    justify-content: center;
+
+    .cont {
+        height: -webkit-fill-available;
+    }
+}
